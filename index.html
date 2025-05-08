@@ -98,7 +98,7 @@
       const ki = document.getElementById('ki').value || 0;
       const kd = document.getElementById('kd').value || 0;
       const sp = document.getElementById('setpoint').value || 0;
-      const data = PID:${kp},${ki},${kd},${sp};
+      const data = `PID:${kp},${ki},${kd},${sp}`;
       characteristic.writeValue(new TextEncoder().encode(data));
     }
 
