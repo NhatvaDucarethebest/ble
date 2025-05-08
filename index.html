@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Self-Balancing Robot Control</title>
+  <title>Auto-Stabilizing Robot Dashboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -27,37 +27,37 @@
   </style>
 </head>
 <body>
-  <h1>Robot BLE Controller</h1>
-  <button id="connectBtn">🔌 Connect to Robot</button>
-  <div class="status" id="status">Disconnected</div>
+  <h1>Robot Bluetooth Manager</h1>
+  <button id="connectBtn">🔗 Link to Robot</button>
+  <div class="status" id="status">Not Linked</div>
 
   <div>
-    <label for="modeToggle">Mode:</label>
+    <label for="modeToggle">Operation Type:</label>
     <select id="modeToggle">
-      <option value="0">Balancing</option>
-      <option value="1">Control</option>
+      <option value="0">Stabilizing</option>
+      <option value="1">Manual</option>
     </select>
-    <button onclick="setMode()">Set Mode</button>
+    <button onclick="setMode()">Apply Type</button>
   </div>
 
   <div class="controls">
-    <h3>Movement Commands (Control Mode)</h3>
+    <h3>Motion Controls (Manual Mode)</h3>
     <div class="arrow-buttons">
-      <button onclick="sendCommand('FWD')">Forward</button><br>
-      <button onclick="sendCommand('LEFT')">Left</button>
+      <button onclick="sendCommand('FWD')">Advance</button><br>
+      <button onclick="sendCommand('LEFT')">Turn Left</button>
       <button onclick="sendCommand('STOP')">Stop</button>
-      <button onclick="sendCommand('RIGHT')">Right</button><br>
-      <button onclick="sendCommand('BWD')">Backward</button>
+      <button onclick="sendCommand('RIGHT')">Turn Right</button><br>
+      <button onclick="sendCommand('BWD')">Reverse</button>
     </div>
   </div>
 
   <div class="controls">
-    <h3>PID Settings</h3>
-    <input type="number" id="kp" placeholder="KP" step="0.1">
-    <input type="number" id="ki" placeholder="KI" step="0.1">
-    <input type="number" id="kd" placeholder="KD" step="0.1">
-    <input type="number" id="setpoint" placeholder="Setpoint" step="0.1">
-    <button onclick="sendPID()">Update PID</button>
+    <h3>Tuning Parameters</h3>
+    <input type="number" id="kp" placeholder="Proportional" step="0.1">
+    <input type="number" id="ki" placeholder="Integral" step="0.1">
+    <input type="number" id="kd" placeholder="Derivative" step="0.1">
+    <input type="number" id="setpoint" placeholder="Target Angle" step="0.1">
+    <button onclick="sendPID()">Adjust Tuning</button>
   </div>
 
   <script>
@@ -74,26 +74,26 @@
         const service = await server.getPrimaryService('4fafc201-1fb5-459e-8fcc-c5c9c331914b');
         characteristic = await service.getCharacteristic('beb5483e-36e1-4688-b7f5-ea07361b26a8');
 
-        document.getElementById('status').textContent = '✅ Connected to ' + device.name;
+        document.getElementById('status').textContent = '✔ Linked to ' + device.name;
       } catch (error) {
         console.error('Connection failed', error);
-        document.getElementById('status').textContent = '❌ Connection failed';
+        document.getElementById('status').textContent = '✖ Linking failed';
       }
     }
 
     function sendCommand(cmd) {
-      if (!characteristic) return alert("Not connected");
+      if (!characteristic) return alert("No connection established");
       characteristic.writeValue(new TextEncoder().encode("CMD:" + cmd));
     }
 
     function setMode() {
-      if (!characteristic) return alert("Not connected");
+      if (!characteristic) return alert("No connection established");
       const mode = document.getElementById('modeToggle').value;
       characteristic.writeValue(new TextEncoder().encode("MODE:" + mode));
     }
 
     function sendPID() {
-      if (!characteristic) return alert("Not connected");
+      if (!characteristic) return alert("No connection established");
       const kp = document.getElementById('kp').value || 0;
       const ki = document.getElementById('ki').value || 0;
       const kd = document.getElementById('kd').value || 0;
